@@ -1,0 +1,44 @@
+<h1>Menu de la semaine</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th></th>
+        <th>Midi</th>
+        <th>Soir</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for day, meals in plan %}
+        <tr>
+            <td><strong>{{ day }}</strong></td>
+            <td>{{ meals.lunch }}</td>
+            <td>{{ meals.dinner }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<br>
+
+<a href="{{ path('meal_planner_home') }}">← Retour</a>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 60%;
+        margin: 20px auto;
+        font-family: sans-serif;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px 12px;
+        text-align: center;
+    }
+    th {
+        background-color: #f5f5f5;
+    }
+    tr:nth-child(even) {
+        background-color: #fafafa;
+    }
+</style>
