@@ -255,4 +255,32 @@ return [
             'Lily' => true,
         ],
     ],
+    [
+        'name' => 'Poisson pané, pommes de terres, épinards',
+        'season' => [
+            'spring' => true,
+            'summer' => true,
+            'autumn' => true,
+            'winter' => true,
+        ],
+        'vegetarian' => false,
+        'person' => [
+            'Matt' => false,
+            'Lily' => true,
+        ],
+    ],
+    [
+        'name' => 'Poisson pané, pommes de terres, haricots',
+        'season' => [
+            'spring' => true,
+            'summer' => true,
+            'autumn' => true,
+            'winter' => true,
+        ],
+        'vegetarian' => false,
+        'person' => [
+            'Matt' => true,
+            'Lily' => true,
+        ],
+    ],
 ];
