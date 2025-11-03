@@ -1,5 +1,53 @@
 <h1>Meal Planner</h1>
 
-<form action="{{ path('meal_planner_generate') }}">
-    <button type="submit">Générer les repas</button>
+<form action="{{ path('meal_planner_generate') }}" method="post">
+    <table>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Midi</th>
+            <th>Soir</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for day in ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'] %}
+            <tr>
+                <td><strong>{{ day }}</strong></td>
+                <td>
+                    <input
+                        type="checkbox"
+                        name="meals[{{ day }}][]"
+                        value="lunch"
+                        checked
+                    >
+                </td>
+                <td>
+                    <input
+                        type="checkbox"
+                        name="meals[{{ day }}][]"
+                        value="dinner"
+                        checked
+                    >
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" style="margin-top:1em;">Générer les repas</button>
 </form>
+
+<style>
+    table {
+        border-collapse: collapse;
+        margin-top: 1em;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        text-align: center;
+    }
+    th {
+        background: #f9f9f9;
+    }
+</style>

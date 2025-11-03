@@ -12,8 +12,8 @@
     {% for day, meals in plan %}
         <tr>
             <td><strong>{{ day }}</strong></td>
-            <td>{{ meals.lunch }}</td>
-            <td>{{ meals.dinner }}</td>
+            <td>{{ meals.lunch ?? '/' }}</td>
+            <td>{{ meals.dinner ?? '/' }}</td>
         </tr>
     {% endfor %}
     </tbody>
