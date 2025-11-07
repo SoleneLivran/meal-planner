@@ -81,7 +81,7 @@ return [
             'autumn' => true,
             'winter' => true,
         ],
-        'vegetarian' => true,
+        'vegetarian' => false,
         'person' => [
             'Matt' => true,
             'Lily' => true,
