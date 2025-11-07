@@ -22,8 +22,8 @@ class MealPlannerController extends AbstractController
         $params = $request->request->all();
         $mealsByDay = $params['meals'] ?? [];
 
-        return $this->render('meal_plan.html.twig', [
-            'plan' => $planner->generateWeeklyPlan(['mealsByDay' => $mealsByDay]),
-        ]);
+        $mealPlan = $planner->generateWeeklyPlan(['mealsByDay' => $mealsByDay]);
+
+        return $this->render('meal_plan.html.twig', ['plan' => $mealPlan]);
     }
 }

@@ -6,9 +6,9 @@ class MealPlannerService
 {
     private array $recipes;
 
-    public function __construct()
+    public function __construct(?array $recipes = null)
     {
-        $this->recipes = include __DIR__.'/../Model/recipes.php';
+        $this->recipes = $recipes ?? include __DIR__ . '/../../config/data/recipes.php';
     }
 
     public function generateWeeklyPlan(array $params = []): array
