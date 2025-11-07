@@ -22,7 +22,9 @@ class MealPlannerServiceTest extends TestCase
         $mealPlannerService = $this->getMealPlannerService(3);
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Not enough recipes available to generate requested plan");
+        $this->expectExceptionMessage(
+            "Impossible de générer un menu correspondant aux critères sélectionnés : le nombre de recettes adaptées est insuffisant.",
+        );
         $mealPlannerService->generateWeeklyPlan($params);
     }
 

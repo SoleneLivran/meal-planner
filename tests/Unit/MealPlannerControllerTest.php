@@ -32,6 +32,45 @@ class MealPlannerControllerTest extends TestCase
         $controller->generate($request, $mealPlannerService);
     }
 
+    public function testGenerateRendersErrorPageIfExceptionIsThrown(): void
+    {
+        $request = new Request();
+
+        $mealPlannerService = $this->createMock(MealPlannerService::class);
+        $errorMessage = 'Something went wrong';
+        $mealPlannerService
+            ->method('generateWeeklyPlan')
+            ->willThrowException(new \Exception($errorMessage));
+
+        $controller = $this->getMockBuilder(MealPlannerController::class)
+            ->onlyMethods(['render'])
+            ->getMock();
+
+        $controller->expects($this->once())
+            ->method('render')
+            ->with('meal_plan_error.html.twig', ['error' => $errorMessage]);
+
+        $controller->generate($request, $mealPlannerService);
+    }
+
+    public function testGenerateRendersErrorPageWithGenericErrorIfExceptionIsThrownWithoutMessage(): void
+    {
+        $request = new Request();
+
+        $mealPlannerService = $this->createMock(MealPlannerService::class);
+        $mealPlannerService->method('generateWeeklyPlan')->willThrowException(new \Exception());
+
+        $controller = $this->getMockBuilder(MealPlannerController::class)
+            ->onlyMethods(['render'])
+            ->getMock();
+
+        $controller->expects($this->once())
+            ->method('render')
+            ->with('meal_plan_error.html.twig', ['error' => 'Impossible de générer le menu']);
+
+        $controller->generate($request, $mealPlannerService);
+    }
+
     public static function mealsByDayProvider(): array
     {
         return [

@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Exception;
+
 class MealPlannerService
 {
     private array $recipes;
@@ -16,7 +18,9 @@ class MealPlannerService
         $mealsByDay = $params['mealsByDay'] ?? [];
         $numberOfMeals = !empty($mealsByDay) ? count(array_merge(...array_values($mealsByDay))) : 0;
         if (count($this->recipes) < $numberOfMeals) {
-            throw new \Exception("Not enough recipes available to generate requested plan");
+            throw new Exception(
+                "Impossible de générer un menu correspondant aux critères sélectionnés : le nombre de recettes adaptées est insuffisant.",
+            );
         }
 
         $weekPlan = [

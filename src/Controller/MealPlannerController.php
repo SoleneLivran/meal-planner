@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\MealPlannerService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,12 @@ class MealPlannerController extends AbstractController
         $params = $request->request->all();
         $mealsByDay = $params['meals'] ?? [];
 
-        $mealPlan = $planner->generateWeeklyPlan(['mealsByDay' => $mealsByDay]);
+        try {
+            $mealPlan = $planner->generateWeeklyPlan(['mealsByDay' => $mealsByDay]);
+        } catch (Exception $e) {
+            $error = !empty($e->getMessage()) ? $e->getMessage() : 'Impossible de générer le menu';
+            return $this->render('meal_plan_error.html.twig', ['error' => $error]);
+        }
 
         return $this->render('meal_plan.html.twig', ['plan' => $mealPlan]);
     }
