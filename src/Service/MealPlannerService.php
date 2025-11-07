@@ -2,8 +2,6 @@
 
 namespace App\Service;
 
-use Exception;
-
 class MealPlannerService
 {
     private array $recipes;
@@ -28,9 +26,7 @@ class MealPlannerService
         }
 
         if (count($recipes) < $numberOfMeals) {
-            throw new Exception(
-                "Impossible de générer un menu correspondant aux critères sélectionnés : le nombre de recettes adaptées est insuffisant.",
-            );
+            throw new NotEnoughRecipesException();
         }
 
         $weekPlan = [

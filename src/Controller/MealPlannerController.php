@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\MealPlannerService;
+use App\Service\NotEnoughRecipesException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +33,8 @@ class MealPlannerController extends AbstractController
 
         try {
             $mealPlan = $planner->generateWeeklyPlan($weeklyPlanParameters);
+        } catch (NotEnoughRecipesException $e) {
+            return $this->render('meal_plan_error.html.twig', ['error' => $e->getMessage()]);
         } catch (Exception $e) {
             $error = !empty($e->getMessage()) ? $e->getMessage() : 'Impossible de générer le menu';
             return $this->render('meal_plan_error.html.twig', ['error' => $error]);

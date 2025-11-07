@@ -4,6 +4,7 @@ namespace App\Tests\Unit;
 
 use App\Controller\MealPlannerController;
 use App\Service\MealPlannerService;
+use App\Service\NotEnoughRecipesException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,15 +55,15 @@ class MealPlannerControllerTest extends TestCase
         $controller->generate($request, $mealPlannerService);
     }
 
-    public function testGenerateRendersErrorPageIfExceptionIsThrown(): void
+    public function testGenerateRendersErrorPageIfNotEnoughRecipesExceptionIsThrown(): void
     {
         $request = new Request();
 
         $mealPlannerService = $this->createMock(MealPlannerService::class);
-        $errorMessage = 'Something went wrong';
+        $expectedExeption = new NotEnoughRecipesException();
         $mealPlannerService
             ->method('generateWeeklyPlan')
-            ->willThrowException(new \Exception($errorMessage));
+            ->willThrowException($expectedExeption);
 
         $controller = $this->getMockBuilder(MealPlannerController::class)
             ->onlyMethods(['render'])
@@ -70,12 +71,12 @@ class MealPlannerControllerTest extends TestCase
 
         $controller->expects($this->once())
             ->method('render')
-            ->with('meal_plan_error.html.twig', ['error' => $errorMessage]);
+            ->with('meal_plan_error.html.twig', ['error' => $expectedExeption->getMessage()]);
 
         $controller->generate($request, $mealPlannerService);
     }
 
-    public function testGenerateRendersErrorPageWithGenericErrorIfExceptionIsThrownWithoutMessage(): void
+    public function testGenerateRendersErrorPageWithGenericErrorIfGenericExceptionIsThrown(): void
     {
         $request = new Request();
 

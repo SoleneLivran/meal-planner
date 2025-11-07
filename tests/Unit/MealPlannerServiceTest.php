@@ -3,7 +3,7 @@
 namespace App\Tests\Unit;
 
 use App\Service\MealPlannerService;
-use Exception;
+use App\Service\NotEnoughRecipesException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ class MealPlannerServiceTest extends TestCase
 
         $mealPlannerService = $this->getMealPlannerService(3);
 
-        $this->expectException(Exception::class);
+        $this->expectException(NotEnoughRecipesException::class);
         $this->expectExceptionMessage(
             "Impossible de générer un menu correspondant aux critères sélectionnés : le nombre de recettes adaptées est insuffisant.",
         );
