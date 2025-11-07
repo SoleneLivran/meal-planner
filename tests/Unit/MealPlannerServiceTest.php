@@ -29,7 +29,7 @@ class MealPlannerServiceTest extends TestCase
     }
 
     #[DataProvider('selectedMealsProvider')]
-    public function testGenerateWeeklyPlanMatchesSelectedMeals(array $mealsByDay): void
+    public function testGenerateWeeklyPlanMatchesSelectedMealsByDay(array $mealsByDay): void
     {
         $params = ['mealsByDay' => $mealsByDay];
         $plan = $this->getMealPlannerService(14)->generateWeeklyPlan($params);
@@ -135,5 +135,43 @@ class MealPlannerServiceTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    public function testGenerateWeeklyPlanOnlySelectsVegetarianRecipesIfRequired(): void
+    {
+        $vegetarianRecipes = [];
+        for ($i = 1; $i <= 6; $i++) {
+            $vegetarianRecipes[] = ['name' => 'Vegetarian recipe' . $i, 'vegetarian' => true];
+        }
+
+        $meatRecipes = [];
+        for ($i = 1; $i <= 6; $i++) {
+            $meatRecipes[] = ['name' => 'Meat recipe' . $i];
+        }
+
+        $testRecipes = array_merge($vegetarianRecipes, $meatRecipes);
+        $mealPlannerService = new MealPlannerService($testRecipes);
+
+        $params = [
+            'mealsByDay' =>
+                [
+                    'Lundi' => ['lunch', 'dinner'],
+                    'Mardi' => ['lunch', 'dinner'],
+                    'Mercredi' => ['lunch', 'dinner'],
+                ],
+            'vegetarianOnly' => true,
+        ];
+
+        mt_srand(1234);
+        $plan = $mealPlannerService->generateWeeklyPlan($params);
+        mt_srand();
+
+        $mappedPlanRecipesNames = array_values(array_filter(array_map('array_values', $plan)));
+        $allPlanRecipesNames = !empty($mappedPlanRecipesNames) ? array_merge(...$mappedPlanRecipesNames) : [];
+
+        $this->assertEmpty(
+            array_intersect($allPlanRecipesNames, array_column($meatRecipes, 'name')),
+            'Weekly plan should only contain vegetarian recipes, but some meat recipes were found.'
+        );
     }
 }

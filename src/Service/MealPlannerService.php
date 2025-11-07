@@ -15,9 +15,19 @@ class MealPlannerService
 
     public function generateWeeklyPlan(array $params = []): array
     {
+        $recipes = $this->recipes;
+
         $mealsByDay = $params['mealsByDay'] ?? [];
         $numberOfMeals = !empty($mealsByDay) ? count(array_merge(...array_values($mealsByDay))) : 0;
-        if (count($this->recipes) < $numberOfMeals) {
+
+        $vegetarianOnly = $params['vegetarianOnly'] ?? false;
+        if ($vegetarianOnly) {
+            $recipes = array_filter($recipes, function ($recipe) {
+                return true === $recipe['vegetarian'];
+            });
+        }
+
+        if (count($recipes) < $numberOfMeals) {
             throw new Exception(
                 "Impossible de générer un menu correspondant aux critères sélectionnés : le nombre de recettes adaptées est insuffisant.",
             );
@@ -37,8 +47,8 @@ class MealPlannerService
             return $weekPlan;
         }
 
-        shuffle($this->recipes);
-        $weekRecipes = array_slice($this->recipes, 0, $numberOfMeals);
+        shuffle($recipes);
+        $weekRecipes = array_slice($recipes, 0, $numberOfMeals);
         $currentIndex = 0;
 
         foreach ($weekPlan as $day => $dayPlan) {

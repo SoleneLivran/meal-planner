@@ -32,6 +32,28 @@ class MealPlannerControllerTest extends TestCase
         $controller->generate($request, $mealPlannerService);
     }
 
+    #[DataProvider('mealsByDayProvider')]
+    public function testGenerateRendersMealPlanWithVegetarianOption(array $mealsByDay, array $expectedPlan): void
+    {
+        $request = new Request([], ['meals' => $mealsByDay, 'vegetarian' => true]);
+
+        $mealPlannerService = $this->createMock(MealPlannerService::class);
+        $mealPlannerService->expects($this->once())
+            ->method('generateWeeklyPlan')
+            ->with(['mealsByDay' => $mealsByDay, 'vegetarianOnly' => true])
+            ->willReturn($expectedPlan);
+
+        $controller = $this->getMockBuilder(MealPlannerController::class)
+            ->onlyMethods(['render'])
+            ->getMock();
+
+        $controller->expects($this->once())
+            ->method('render')
+            ->with('meal_plan.html.twig', ['plan' => $expectedPlan]);
+
+        $controller->generate($request, $mealPlannerService);
+    }
+
     public function testGenerateRendersErrorPageIfExceptionIsThrown(): void
     {
         $request = new Request();

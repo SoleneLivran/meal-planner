@@ -21,10 +21,17 @@ class MealPlannerController extends AbstractController
     public function generate(Request $request, MealPlannerService $planner): Response
     {
         $params = $request->request->all();
-        $mealsByDay = $params['meals'] ?? [];
+
+        $weeklyPlanParameters = [
+            'mealsByDay' => $params['meals'] ?? [],
+        ];
+
+        if (isset($params['vegetarian']) && !!$params['vegetarian']) {
+            $weeklyPlanParameters['vegetarianOnly'] = true;
+        }
 
         try {
-            $mealPlan = $planner->generateWeeklyPlan(['mealsByDay' => $mealsByDay]);
+            $mealPlan = $planner->generateWeeklyPlan($weeklyPlanParameters);
         } catch (Exception $e) {
             $error = !empty($e->getMessage()) ? $e->getMessage() : 'Impossible de générer le menu';
             return $this->render('meal_plan_error.html.twig', ['error' => $error]);
