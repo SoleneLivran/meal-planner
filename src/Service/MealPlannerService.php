@@ -16,9 +16,6 @@ class MealPlannerService
         $mealsByDay = $params['mealsByDay'] ?? [];
         $numberOfMeals = !empty($mealsByDay) ? count(array_merge(...array_values($mealsByDay))) : 0;
 
-        shuffle($this->recipes);
-        $weekRecipes = array_slice($this->recipes, 0, $numberOfMeals);
-
         $weekPlan = [
           'Lundi' => [],
           'Mardi' => [],
@@ -29,6 +26,12 @@ class MealPlannerService
           'Dimanche' => [],
         ];
 
+        if (0 === $numberOfMeals) {
+            return $weekPlan;
+        }
+
+        shuffle($this->recipes);
+        $weekRecipes = array_slice($this->recipes, 0, $numberOfMeals);
         $currentIndex = 0;
 
         foreach ($weekPlan as $day => $dayPlan) {
